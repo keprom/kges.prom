@@ -1,0 +1,60 @@
+<?php 
+function select($var,$name,$value)
+{
+	$string="<select name={$name}_id>";
+	foreach ($var->result() as $v) 
+	{
+		$string.="<option value={$v->id} ".($v->id==$value?" selected ":"")." >{$v->name}</option>";
+	}
+	$string.="</select><br>";
+	echo $string;
+}
+?>
+<html>
+<head>
+<title>Добавление нового абонента</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+</head>
+<body>
+<br />
+<br />
+<center>
+<h2>Добавление нового абонента</h2>
+<br />
+
+<?php echo form_open("kassa3/adding_abonent");?>
+
+Абонентский номер 
+<input name="number" value="<?php echo $abonent_number;?>"> <br/><br/>
+<?php
+  if ($abonent==NULL)
+  {
+	echo "Фамилия имя отчество <input name=fio /><br /><br />Улица <select name='street_id' >";
+	foreach($street->result() as $s)
+	{
+		echo "<option value='{$s->id}'>{$s->name}</option>";
+	}
+	echo "</select><br><br>";
+	echo "Дом <input name=dom /><br /><br />Квартира <input name=kv /><br /><br />";
+  }
+  else
+  {
+	$ab=$abonent->row();
+	echo "Фамилия имя отчество <input name=fio value='".$ab->fio."'/><br /><br />";
+	echo "Улица <select name='street_id' >"; 
+	foreach($street->result() as $s)
+	{
+		echo "<option ".($s->id==$ab->street_id?" selected ":"")." value={$s->id}  >".trim($s->name)."</option>";
+	}
+	echo "</select><br><br>";
+	echo "Дом <input name=dom value={$ab->dom} /><br /><br />Квартира <input name=kv value={$ab->kv} /><br /><br />";
+	
+  }
+  ?>
+  <br /><br />
+
+<input type=submit value='Обновить данные' />
+</form>
+</center>
+</body>
