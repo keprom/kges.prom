@@ -2613,44 +2613,122 @@ class Billing extends Controller
 		$data['oborotka']=$this->db->get("industry.oborotno_svodnaya_vedomost");
 		$this->load->view("reports/oborotno_svodnaya_vedomost",$data);	
 	}
-	
-	function perenos_rek1()
-	{
-		$nach=$this->db->get("industry.perenos_rekvizit");
-		
-		set_time_limit(0);
-		$db = dbase_open("c:/oplata/rekv.dbf", 2);
-		
-		if ($db)
-		{			
-			for ($i=1;$i<dbase_numrecords($db)+1;$i++)
-			{
-				dbase_delete_record($db, $i);	
-			}
-			dbase_pack($db);
-			dbase_close($db);
-			
-			$db2 = dbase_open("c:/oplata/rekv.dbf", 2);
-			foreach ($nach->result() as $n)
-			{
-				dbase_add_record($db2,
-				array (
-				iconv("utf-8","cp866",$n->name),
-				$n->dog,$n->rnn,iconv("utf-8","cp866",$n->direct),iconv("utf-8","cp866",$n->adres),iconv("utf-8","cp866",$n->schet),
-						iconv("utf-8","cp866",$n->tel),$this->d2($n->data),iconv("utf-8","cp866",$n->sub),
-						iconv("utf-8","cp866",$n->bank),iconv("utf-8","cp866",$n->mfo),iconv("utf-8","cp866",$n->korr),
-						iconv("utf-8","cp866",$n->adresbank),iconv("utf-8","cp866",$n->otrasl),iconv("utf-8","cp866",$n->bin),"0".$n->dog1
-						
-					)
-					);
-			}
-				
-			
-			dbase_close($db2);			
-		}
-		else 
-			echo "База не открыта";		
-	}
+
+    function isRussian($text)
+    {
+        return preg_match('/[А-Яа-яЁё]/u', $text);
+    }
+
+    function perenos_rek1()
+    {
+        header('Content-Type: text/html; charset="utf-8"');
+
+
+        $this->db->order_by("dog");
+        $nach = $this->db->get("industry.perenos_rekvizit");
+        set_time_limit(0);
+        $db = dbase_open("c:/oplata/rekv.dbf", 2);
+
+        if ($db) {
+            for ($i = 1; $i < dbase_numrecords($db) + 1; $i++) {
+                dbase_delete_record($db, $i);
+            }
+            dbase_pack($db);
+            dbase_close($db);
+
+            $russian_letters = array("А", "О", "Е", "С", "Х", "Р", "Т", "Н", "К", "В", "М");
+            $english_letters = array("A", "O", "E", "C", "X", "P", "T", "H", "K", "B", "M");
+            $incorrected_bins = array();
+            $ei_mfo = array();
+            $i = 0;
+            $e = 0;
+
+            $db2 = dbase_open("c:/oplata/rekv.dbf", 2);
+            foreach ($nach->result() as $n) {
+
+                //находим некорректные БИКи и МФО банков
+                if ((mb_strlen(trim($n->mfo), 'UTF-8') != 8) and ($n->mfo != '0000000000')) {
+                    $ei_mfo[$n->bank]['len'] = mb_strlen(trim($n->mfo), 'UTF-8');
+                    $ei_mfo[$n->bank]['mfo'] = trim($n->mfo);
+                    $e++;
+                }
+
+                //обнуляем пустые МФО
+                if (($n->mfo == '0000000000')) {
+                    $n->mfo = '';
+                }
+
+                //находим некорректные БИНы организаций
+                if ((mb_strlen(trim($n->bin), 'UTF-8') != 12) and (mb_strlen(trim($n->bin), 'UTF-8') != 0)) {
+                    $incorrected_bins[$i]['dog'] = $n->dog;
+                    $incorrected_bins[$i++]['bin'] = $n->bin;
+                    $e++;
+                }
+
+                //обнуляем пустые БИНы
+                if ((mb_strlen(trim($n->bin), 'UTF-8') == 0)) {
+                    $n->bin = '';
+                }
+
+                //заменяем кириллицу на латиницу в МФО
+                $n->mfo = str_replace($russian_letters, $english_letters, $n->mfo);
+
+                //вдруг пропущен символ
+                if ($this->isRussian($n->mfo)) {
+                    echo "{$n->mfo} contains russian letters<br>";
+                    $e++;
+                }
+
+                //пропуск цикла если есть ошибки
+                if ($e != 0) {
+                    $e = 0;
+                    continue;
+                }
+
+                dbase_add_record($db2,
+                    array(
+                        mb_convert_encoding(str_replace('  ', ' ', trim($n->name)), 'cp866', 'utf-8'),
+                        mb_convert_encoding(str_replace('  ', ' ', trim($n->dog)), 'cp866', 'utf-8'),
+                        mb_convert_encoding(str_replace('  ', ' ', trim($n->rnn)), 'cp866', 'utf-8'),
+                        mb_convert_encoding(str_replace('  ', ' ', trim($n->direct)), 'cp866', 'utf-8'),
+                        mb_convert_encoding(str_replace('  ', ' ', trim($n->adres)), 'cp866', 'utf-8'),
+                        mb_convert_encoding(str_replace('  ', ' ', trim($n->schet)), 'cp866', 'utf-8'),
+                        mb_convert_encoding(str_replace('  ', ' ', trim($n->tel)), 'cp866', 'utf-8'),
+                        $this->d2($n->data),
+                        mb_convert_encoding(str_replace('  ', ' ', trim($n->sub)), 'cp866', 'utf-8'),
+                        mb_convert_encoding(str_replace('  ', ' ', trim($n->bank)), 'cp866', 'utf-8'),
+                        mb_convert_encoding(str_replace('  ', ' ', trim($n->mfo)), 'cp866', 'utf-8'),
+                        mb_convert_encoding(str_replace('  ', ' ', trim($n->korr)), 'cp866', 'utf-8'),
+                        mb_convert_encoding(str_replace('  ', ' ', trim($n->adresbank)), 'cp866', 'utf-8'),
+                        mb_convert_encoding(str_replace('  ', ' ', trim($n->otrasl)), 'cp866', 'utf-8'),
+                        mb_convert_encoding(str_replace('  ', ' ', trim($n->bin)), 'cp866', 'utf-8'),
+                        "0" . $n->dog1
+                    )
+                );
+            }
+            dbase_close($db2);
+
+            $ei_mfo = ($ei_mfo);
+
+            echo "<br><br>";
+
+            echo "<b>Договора с некорректными БИНами:</b><br>";
+            foreach ($incorrected_bins as $ib) {
+                echo $ib['dog'] . ": " . $ib['bin'] . "<br>";
+            }
+
+            echo "<br><br>";
+
+            echo "<b>Банки с некорректными МФО:</b><br>";
+            foreach ($ei_mfo as $key => $ib) {
+                echo $key . ": " . $ib['mfo'] . ": " . $ib['len'] . "<br>";
+            }
+
+        } else {
+            echo "База не открыта";
+        }
+    }
+
 	function perenos_nach()
 	{
 		$nach=$this->db->get("industry.schetfactura_to_1c");
