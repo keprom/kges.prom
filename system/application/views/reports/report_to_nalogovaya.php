@@ -26,14 +26,22 @@ echo "<tr>
 		<td>Номер сч/ф</td>
 		<td>Дата</td>
 		<td></td>
-		<td></td>
 		<td>Сумма без ндс</td>
 		<td>НДС</td>
 		<td>НДС</td></tr>";
 		$j=1;
 foreach ($nalog->result() as $n)
 {
-	echo "<tr>
+    $n->firm_name = trim($n->firm_name);
+    $n->dogovor = trim($n->dogovor);
+    $n->rnn = trim($n->rnn);
+    $n->bin = trim($n->bin);
+    $n->id = trim($n->id);
+    $n->schetfactura_date = trim($n->schetfactura_date);
+    $n->itog_tenge = trim($n->itog_tenge);
+    $n->itogo_nds = trim($n->itogo_nds);
+    $n->itogo_nds = trim($n->itogo_nds);
+    echo "<tr>
 		<td>{$n->firm_name}</bd>
 		<td>{$n->dogovor}</td>
 		<td>".($j++)."</td>
@@ -42,8 +50,7 @@ foreach ($nalog->result() as $n)
 		<td>'{$n->bin}</td>
 		<td>{$n->id}</td>
 		<td>{$n->schetfactura_date}</td>
-		<td></td>
-		<td></td>
+		<td>1</td>
 		<td>{$n->itog_tenge}</td>
 		<td>{$n->itogo_nds}</td>
 		<td>{$n->itogo_nds}</td></tr>";
