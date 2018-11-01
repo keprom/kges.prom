@@ -2650,6 +2650,7 @@ class Billing extends Controller
                 if ((mb_strlen(trim($n->mfo), 'UTF-8') != 8) and ($n->mfo != '0000000000')) {
                     $ei_mfo[$n->bank]['len'] = mb_strlen(trim($n->mfo), 'UTF-8');
                     $ei_mfo[$n->bank]['mfo'] = trim($n->mfo);
+                    $ei_mfo[$n->bank]['dog'] = trim($n->dog);
                     $e++;
                 }
 
@@ -2721,7 +2722,8 @@ class Billing extends Controller
 
             echo "<b>Банки с некорректными МФО:</b><br>";
             foreach ($ei_mfo as $key => $ib) {
-                echo $key . ": " . $ib['mfo'] . ": " . $ib['len'] . "<br>";
+                echo $ib['dog'].":
+				".$key . ": " . $ib['mfo'] . ": " . $ib['len'] . "<br>";
             }
 
         } else {
@@ -2729,7 +2731,8 @@ class Billing extends Controller
         }
     }
 
-	function perenos_nach()
+
+    function perenos_nach()
 	{
 		$nach=$this->db->get("industry.schetfactura_to_1c");
 		
