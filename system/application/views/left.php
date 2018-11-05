@@ -11,6 +11,7 @@
 	<script type="text/javascript" src="<?php  echo base_url();?>addcss.js"></script>
 	<script type="text/javascript" src="<?php  echo base_url();?>tabtastic.js"></script>
 	<link rel="stylesheet" href="<?php  echo base_url();?>tabtastic.css" type="text/css" media="screen,projection" />
+	<link rel="stylesheet" href="/css/fullpage.css" type="text/css" media="screen,projection"/>
 </head>
  
 <body>
