@@ -6,6 +6,7 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rel="shortcut icon" type="image/png" href="<?php echo base_url(); ?>img/favicon.png"/>
 <link rel="stylesheet" href="<?php  echo base_url();?>css/1.css" type="text/css" media="screen,projection" />
+<link rel="shortcut icon" type="image/png" href="/img/favicon.png"/>
 <script type="text/javascript" src="<?php  echo base_url();?>addclasskillclass.js"></script>
 	<script type="text/javascript" src="<?php  echo base_url();?>attachevent.js"></script>
 	<script type="text/javascript" src="<?php  echo base_url();?>addcss.js"></script>
