@@ -2782,41 +2782,37 @@ class Billing extends Controller
     }
 
     function perenos_nach()
-	{
-		$nach=$this->db->get("industry.schetfactura_to_1c");
-		
-		set_time_limit(0);
-		$db = dbase_open("c:/oplata/schet.dbf", 2);
-		
-		if ($db)
-		{			
-			for ($i=1;$i<dbase_numrecords($db)+1;$i++)
-			{
-				dbase_delete_record($db, $i);	
-			}
-			dbase_pack($db);
-			dbase_close($db);
-			
-			$db2 = dbase_open("c:/oplata/schet.dbf", 2);
-			foreach ($nach->result() as $n)
-			{
-				dbase_add_record($db2,
-				array (
-				$n->dog,
-						$n->kvt,
-						$n->tarif,$n->beznds,$n->nds,$n->snds, $n->nomer,$this->d2($n->data), "0".$n->dog1
-				
-					)
-					);
-			}
-				
-			
-			dbase_close($db2);			
-		}
-		else 
-			echo "База не открыта";		
-	}
-	
+    {
+        set_time_limit(0);
+        @$db = dbase_open("c:/oplata/schet.dbf", 2);
+        if ($db) {
+            $this->db->where('period_id', $this->get_cpi());
+            $nach = $this->db->get("industry.schetfactura_to_1c");
+            for ($i = 1; $i < dbase_numrecords($db) + 1; $i++) {
+                dbase_delete_record($db, $i);
+            }
+            dbase_pack($db);
+            dbase_close($db);
+            $db2 = dbase_open("c:/oplata/schet.dbf", 2);
+            foreach ($nach->result() as $n) {
+                dbase_add_record($db2,
+                    array(
+                        $n->dog,
+                        $n->kvt,
+                        $n->tarif, $n->beznds, $n->nds, $n->snds, $n->nomer, $this->d2($n->data), "0" . $n->dog1
+                    )
+                );
+            }
+            dbase_close($db2);
+            $array = array(1 => 'Перенос прошел успешно!');
+            $this->session->set_flashdata('success', $array);
+            redirect('billing/pre_perehod');
+        } else {
+            $array = array(1 => 'Перенос не возможен. Закройте файл schet.dbf!');
+            $this->session->set_flashdata('error', $array);
+            redirect('billing/pre_perehod');
+        }
+    }
 	
 	function firm_poter()
 	{
@@ -4533,7 +4529,7 @@ where firm_id={$this->uri->segment(3)} and data_finish is null";
         $this->db->where("period_id = industry.current_period_id()");
         $prev_values = $this->db->get("industry.tariff_current_value")->row();
 
-        if ($data <= $prev_values->tariff_data) {
+        if ($data < $prev_values->tariff_data) {
             die("date error");
         }
 
