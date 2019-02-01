@@ -4744,8 +4744,13 @@ where firm_id={$this->uri->segment(3)} and data_finish is null";
     {
         $data['report'] = $this->db->get("shell.kontragent_rek")->result();
         $this->load->view("other_reports/kontragent_rek", $data);
-    }	
-	
+    }
+
+    public function sf_verification()
+    {
+        $data['report'] = $this->db->get("shell.sf_verification")->result();
+        $this->load->view("other_reports/sf_verification", $data);
+    }
 }
 
 ?>
