@@ -4751,6 +4751,13 @@ where firm_id={$this->uri->segment(3)} and data_finish is null";
         $data['report'] = $this->db->get("shell.sf_verification")->result();
         $this->load->view("other_reports/sf_verification", $data);
     }
+
+    public function migration()
+    {
+        $data['report'] = $this->db->get("shell.migration")->result();
+        $this->export_to_excel("other_reports/migration", $data,"кокшетау_гэс");
+//        $this->load->view("other_reports/migration", $data);
+    }
 }
 
 ?>
