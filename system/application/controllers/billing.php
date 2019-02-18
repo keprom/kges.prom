@@ -1938,52 +1938,53 @@ class Billing extends Controller
 		$day=substr($var,6,2);
 		return $day.".".$month.".".$year;
 	}
-	function dbase()
-	{
-		$this->db->query("delete from industry.oplata_buf");
-		$period=$this->db->query("select * from industry.period where 
-			id in 	(select value::integer from industry.sprav	where name='current_period')")->row();
-		$sql="";
-		set_time_limit(0);		
-		$db = dbase_open("c:/oplata/OPLATA.dbf", 0);
-		
-		if ($db)
-		{			
-			for ($i=1;$i<dbase_numrecords($db)+1;$i++)
-			{
-				$rec=dbase_get_record_with_names($db,$i);
-				
-				$year=substr($rec['DATA'],0,4);
-				$month=substr($rec['DATA'],4,2);
-				$day=substr($rec['DATA'],6,2);
-				
-				$data=mktime(0,0,0,$month,$day,$year);
-				$data=date("Y-m-d",$data);
-				if (($data>= $period->begin_date)and($data<=$period->end_date))
-				{
-					$rec['DATA']=$this->to_date($rec['DATA']);
-					$rec['DATA_V']=$this->to_date($rec['DATA_V']);
-					
-					if (strlen(trim($rec['VO']))==0) $rec['VO']=0;
-					
-					$sql.="\nINSERT INTO industry.oplata_buf(
+
+    function dbase()
+    {
+        $this->db->query("delete from industry.oplata_buf");
+        $period = $this->db->query("select * from industry.period where id = industry.current_period_id()")->row();
+        $sql = "";
+        set_time_limit(0);
+        $db = dbase_open("c:/oplata/OPLATA.dbf", 0);
+
+        if ($db) {
+            for ($i = 1; $i < dbase_numrecords($db) + 1; $i++) {
+                $rec = dbase_get_record_with_names($db, $i);
+
+                $year = substr($rec['DATA'], 0, 4);
+                $month = substr($rec['DATA'], 4, 2);
+                $day = substr($rec['DATA'], 6, 2);
+
+                $data = mktime(0, 0, 0, $month, $day, $year);
+                $data = date("Y-m-d", $data);
+                if (($data >= $period->begin_date) and ($data <= $period->end_date)) {
+                    $rec['DATA'] = $this->to_date($rec['DATA']);
+                    $rec['DATA_V'] = $this->to_date($rec['DATA_V']);
+
+                    if (strlen(trim($rec['VO'])) == 0) $rec['VO'] = 0;
+
+                    $rec['UN_NOM'] = iconv(mb_detect_encoding($rec['UN_NOM'], mb_detect_order(), true), "UTF-8", $rec['UN_NOM']);
+                    $rec['N_DOKUM'] = iconv(mb_detect_encoding($rec['N_DOKUM'], mb_detect_order(), true), "UTF-8", $rec['N_DOKUM']);
+
+                    $sql .= "\nINSERT INTO industry.oplata_buf(
 					 data, un_nom, dog, data_v, n_dokum, sum, schet, vo) values 
-					 ('{$rec['DATA']}',{$rec['UN_NOM']},{$rec['DOG']},
-					 '{$rec['DATA_V']}',{$rec['N_DOKUM']},{$rec['SUM']},
+					 ('{$rec['DATA']}','{$rec['UN_NOM']}',{$rec['DOG']},
+					 '{$rec['DATA_V']}','{$rec['N_DOKUM']}',{$rec['SUM']},
 					 '{$rec['SCHET']}',{$rec['VO']});\n";
-				}				
-			}
-			dbase_close($db);
-			
-			$this->db->query($sql);
-			
-			$d["d"]=$this->db->get('industry.oplata_unknown_dogovor');
-			$d["s"]=$this->db->get('industry.oplata_unknown_schet');
-			$this->load->view("oplata/import",$d);
-		}
-		else 
-			echo "База не открыта";		
-	}
+                }
+            }
+            dbase_close($db);
+
+            $this->db->query($sql);
+
+            $d["d"] = $this->db->get('industry.oplata_unknown_dogovor');
+            $d["s"] = $this->db->get('industry.oplata_unknown_schet');
+            $this->load->view("oplata/import", $d);
+        } else {
+            echo "Oplata.dbf is busy!";
+        }
+    }
+
 	function oplata_import()
 	{		
 		$this->db->query(
