@@ -2002,7 +2002,7 @@ class Billing extends Controller
 			sum/(1+industry.current_nds()/100),industry.current_nds() from industry.oplata_buf 
 			where industry.firm_id_by_dogovor(dog) is not null and industry.schet_id_by_name(schet) is not null"
 			);
-				$this->db->query(
+		$this->db->query(
             "DELETE FROM industry.fine_oplata WHERE data BETWEEN
                (SELECT period.begin_date FROM industry.period
                      LEFT JOIN industry.sprav ON sprav.name='current_period'
@@ -4632,6 +4632,7 @@ where firm_id={$this->uri->segment(3)} and data_finish is null";
             dbase_close($db);
 
             $this->db->where('period_id', $this->get_cpi());
+            $this->db->where('kvt > 0');
             $nach = $this->db->get("shell.export_rekvizit_schet");
 
             $russian_letters = array("А", "О", "Е", "С", "Х", "Р", "Т", "Н", "К", "В", "М");
@@ -4749,8 +4750,23 @@ where firm_id={$this->uri->segment(3)} and data_finish is null";
 
     public function sf_verification()
     {
+        switch ($_POST['kvt_type']){
+            case '-1':
+                $this->db->where('kvt < 0');
+                break;
+            case '1':
+                $this->db->where('kvt > 0');
+                break;
+        }
         $data['report'] = $this->db->get("shell.sf_verification")->result();
         $this->load->view("other_reports/sf_verification", $data);
+    }
+
+    public function pre_sf_verification()
+    {
+        $this->left();
+        $this->load->view("other_reports/pre_sf_verification");
+        $this->load->view("right");
     }
 
     public function migration()
