@@ -72,7 +72,7 @@ function f_d32($var)
 			</tr>
 			<tr>
 				
-				<td align=center><?php echo $schetfactura_date->id; ?></td>
+				<td align=center><?php echo "0".$schetfactura_date->id; ?></td>
 				<td align=center><?php 
 					if(strlen($data_schet)==0)
 						echo datetostring($schetfactura_date->date);
