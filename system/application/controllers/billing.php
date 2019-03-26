@@ -498,10 +498,10 @@ class Billing extends Controller
     {
         $sql = "SELECT * FROM industry.billing_point where id=" . $this->uri->segment(3);
         $data['point_data'] = $this->db->query($sql)->row();
-        $sql = "SELECT counter.*,counter_type.name as type from industry.counter,industry.counter_type where counter.type_id=counter_type.id and  point_id=" . $this->uri->segment(3);
+        $sql = "SELECT counter.*,counter_type.name as type from industry.counter,industry.counter_type where counter.type_id=counter_type.id and  point_id=" . $this->uri->segment(3)." order by data_finish";
         $data['query'] = $this->db->query($sql);
 
-        $sql = "select * from industry.counter where data_start is null  and  point_id=" . $this->uri->segment(3);
+        $sql = "select * from industry.counter where data_start is null and point_id=" . $this->uri->segment(3);
         $query = $this->db->query($sql);
         $this->left();
 
