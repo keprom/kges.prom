@@ -6,7 +6,7 @@ function datetostring($date)
 }
 ?>
 <?php 
-echo anchor(base_url()."index.php/billing/firm/".$point_data->firm_id,"Назад к фирме" )."<br>"; 
+echo anchor(base_url()."/billing/firm/".$point_data->firm_id,"Назад к фирме" )."<br>";
 if ($this->session->flashdata('is_deleted')==-1)
   echo "<h3>Счетчик успешно удален</h3>";
 if ($this->session->flashdata('is_deleted')==1)
