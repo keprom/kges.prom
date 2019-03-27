@@ -20,7 +20,7 @@ $j = 0;
 ?>
 <?php echo anchor("billing/firm/" . $firm_id, "назад к фирме"); ?><br><br>
 <b><?php echo $firm->dogovor . " " . $firm->name; ?></b><br><br>
-<?php if (!empty($point_list)): ?>
+<?php if (!empty($point_list) and (count($point_list) > 1)): ?>
     <ul>
         <?php foreach ($point_list as $p): ?>
             <li><?php echo anchor("billing/edit_pokaz/{$firm_id}#{$p->id}", $p->name); ?></li>
@@ -56,7 +56,7 @@ $j = 0;
         <?php endif; ?>
         <?php if ($last_bill_id != $p->bill_id): ?>
             <tr>
-                <td colspan="5" style="word-wrap: break-word; width: 250px"><a id="<?php echo $p->bill_id; ?>"><h3><b><?php echo $p->bill_name; ?></a></b></h3>
+                <td colspan="5" style="word-break: break-all; width: 250px"><a id="<?php echo $p->bill_id; ?>"><h3><b><?php echo $p->bill_name; ?></a></b></h3>
                 </td>
             </tr>
         <?php endif; ?>
