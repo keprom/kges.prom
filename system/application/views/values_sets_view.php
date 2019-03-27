@@ -12,7 +12,6 @@ echo $counter_data->digit_count;
 <?php
 echo $counter_data->gos_nomer;
 
-
 function datetostring($date)
 {
     $d = explode("-", $date);
@@ -57,34 +56,33 @@ function datetostring($date)
         $itogo_tenge = $counter_data->transform * $r->diff * $r->tariff_value;
         $itogo_nds = $counter_data->transform * $r->diff * $r->tariff_value * ($r->nds / 100);
         $summa = $counter_data->transform * $r->diff * $r->tariff_value * ($r->nds / 100 + 1);
-
         ?>
-        <tr>
-            <td>
+        <tr class="tr-hover">
+            <td align="right">
                 <small> <?php echo $r->value; ?> </small>
             </td>
-            <td>
+            <td align="right">
                 <small> <?php echo $r->diff; ?> </small>
             </td>
-            <td>
+            <td align="center">
                 <small> <?php echo datetostring($r->data); ?></small>
             </td>
-            <td>
-                <small> <?php echo $r->tariff_value; ?> </small>
+            <td align="right">
+                <small> <?php echo prettify_number($r->tariff_value); ?> </small>
             </td>
             <td>
-                <small> <?php echo $r->nds; ?>%</small>
+                <small> <?php echo prettify_number($r->nds); ?>%</small>
             </td>
-            <td>
+            <td align="right">
                 <small> <?php echo $itogo_kvt; ?> </small>
             </td>
-            <td>
+            <td align="right">
                 <small> <?php echo $itogo_tenge; ?> </small>
             </td>
-            <td>
+            <td align="right">
                 <small> <?php echo $itogo_nds; ?> </small>
             </td>
-            <td>
+            <td align="right">
                 <small> <?php echo $summa; ?>  </small>
             </td>
             <td><?php echo anchor("billing/delete_pokazanie/" . $r->id, "<img src=" . base_url() . "img/delete.png />"); ?></td>

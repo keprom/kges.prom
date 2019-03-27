@@ -776,11 +776,9 @@ class Billing extends Controller
     function values_sets()
     {
         $values_set_id = $this->uri->segment(3);
-
         $this->db->where("id", $values_set_id);
         $data['counter_id'] = $this->db->get("industry.values_set")->row()->counter_id;
-
-        $sql = "Select * from industry.counter where id=(select counter_id from industry.values_set where id=" .
+        $sql = "select * from industry.counter where id=(select counter_id from industry.values_set where id=" .
             $values_set_id . ")";
         $data['counter_data'] = $this->db->query($sql)->row();
         $data['sets_id'] = $values_set_id;

@@ -6,7 +6,7 @@
     width: 297mm;
 }
 
-@media print{
+@media print {
     .portrait {
         width: 201mm;
     }
@@ -40,7 +40,7 @@
 }
 
 .border-bottom-cell, .border-bottom td {
-    border-bottom:1pt solid black;
+    border-bottom: 1pt solid black;
 }
 
 .border-td {
@@ -76,7 +76,7 @@
     font-size: 18px;
     border: none;
     outline: none;
-    background-color: #1a237e ;
+    background-color: #1a237e;
     color: white;
     cursor: pointer;
     padding: 15px;
@@ -85,4 +85,8 @@
 
 #myBtn:hover {
     background-color: #555;
+}
+
+.tr-hover:hover {
+    background-color: #c5cae9 ;
 }
