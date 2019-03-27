@@ -21,7 +21,7 @@ function datetostring($date)
 
 ?>
 <br><br>
-<table>
+<table style="border-collapse: collapse">
     <tr align=center>
         <td><b>
                 <small>Показание</small>
@@ -59,34 +59,34 @@ function datetostring($date)
         $summa = $counter_data->transform * $r->diff * $r->tariff_value * ($r->nds / 100 + 1);
         ?>
         <tr class="tr-hover">
-            <td align="right">
+            <td align="right" >
                 <small> <?php echo $r->value; ?> </small>
             </td>
-            <td align="right">
+            <td align="right" >
                 <small> <?php echo $r->diff; ?> </small>
             </td>
-            <td align="center">
+            <td align="center" >
                 <small> <?php echo datetostring($r->data); ?></small>
             </td>
-            <td align="right">
+            <td align="right" >
                 <small> <?php echo prettify_number($r->tariff_value); ?> </small>
             </td>
-            <td>
+            <td  >
                 <small> <?php echo prettify_number($r->nds); ?>%</small>
             </td>
-            <td align="right">
-                <small> <?php echo $itogo_kvt; ?> </small>
+            <td align="right" >
+                <small> <?php echo prettify_number($itogo_kvt); ?> </small>
             </td>
-            <td align="right">
-                <small> <?php echo $itogo_tenge; ?> </small>
+            <td align="right" >
+                <small> <?php echo prettify_number($itogo_tenge); ?> </small>
             </td>
-            <td align="right">
-                <small> <?php echo $itogo_nds; ?> </small>
+            <td align="right" >
+                <small> <?php echo prettify_number($itogo_nds); ?> </small>
             </td>
-            <td align="right">
-                <small> <?php echo $summa; ?>  </small>
+            <td align="right" >
+                <small> <?php echo prettify_number($summa); ?>  </small>
             </td>
-            <td><?php echo anchor("billing/delete_pokazanie/" . $r->id, "<img src=" . base_url() . "img/delete.png />"); ?></td>
+            <td ><?php echo anchor("billing/delete_pokazanie/" . $r->id, "<img src=" . base_url() . "img/delete.png />"); ?></td>
 
         </tr>
     <?php endforeach; ?>
