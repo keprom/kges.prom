@@ -14,6 +14,8 @@ function datetostring($date)
 	return $d['2'].'.'.$d['1'];
 }
 ?>
+<?php echo anchor("billing/firm/" . $firm->id, "назад к фирме"); ?><br><br>
+<b><?php echo $firm->dogovor." ".$firm->name; ?></b><br><br>
 <b>Оплата за период по организации:</b><br><br><br>
 <table border=1px width=100% style="border: black;" cellspacing=0px cellpadding=0px>
 <tr><td><b>Оплата с ндс</b></td><td><b>Ндс</b></td><td><b>Номер счета</b></td><td><b>Расшифровка счета</b></td>

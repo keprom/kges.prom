@@ -1,3 +1,5 @@
+<?php echo anchor("billing/firm/" . $firm->id, "назад к фирме"); ?><br><br>
+    <b><?php echo $firm->dogovor." ".$firm->name; ?></b><br><br>
 <?php
 $r=$r->row();
 echo form_open("billing/pre_schetoplata2");

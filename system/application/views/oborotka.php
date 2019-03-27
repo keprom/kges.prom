@@ -4,6 +4,8 @@ function f_d($var)
 	if ($var==0) return "&nbsp;"; else
 	return sprintf("%22.2f",$var);
 }?>
+<?php echo anchor("billing/firm/" . $firm->id, "назад к фирме"); ?><br><br>
+<b><?php echo $firm->dogovor." ".$firm->name; ?></b><br><br>
 <font size=4><center>Оборотка по организации</center></font><br><br>
 <font size=3>
 <table border=1px width=100% style="border: black;" cellspacing=0px cellpadding=0px>

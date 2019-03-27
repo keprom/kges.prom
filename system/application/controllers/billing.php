@@ -171,9 +171,12 @@ class Billing extends Controller
 
     function firm_edit()
     {
+        $firm_id = $this->uri->segment(3);
         $sql = "SELECT firm.id,firm.dogovor,firm.address, firm.name,  firm.telefon, firm.rnn, firm.dogovor_date, firm.is_pot, firm.period_id FROM industry.firm WHERE  firm.id=" . $this->uri->segment(3);
         $this->db->where('id', $this->uri->segment(3));
         $data['r'] = $this->db->get('industry.firm');
+
+        $data['firm'] = $this->get_firm_info_by_id($firm_id);
 
         $sql = "SELECT period.*,case when sprav.value is not null then 'selected' else '' end  as checked FROM industry.period left join industry.sprav on period.id=sprav.value::integer and sprav.name='current_period' order by id";
         $data['period'] = $this->db->query($sql);
@@ -1217,6 +1220,10 @@ class Billing extends Controller
         $data['r'] = $this->db->get('industry.firm');
         $sql = "SELECT period.*,case when sprav.value is not null then 'selected' else '' end  as checked FROM industry.period left join industry.sprav on period.id=sprav.value::integer and sprav.name='current_period' order by id";
         $data['period'] = $this->db->query($sql);
+
+        $firm_id = $this->uri->segment(3);
+        $data['firm'] = $this->get_firm_info_by_id($firm_id);
+
         $this->left();
         $this->load->view("pre_schetfactura", $data);
         $this->load->view("right");
@@ -1566,6 +1573,10 @@ class Billing extends Controller
         $data['r'] = $this->db->get('industry.firm');
         $sql = "SELECT period.*,case when sprav.value is not null then 'selected' else '' end  as checked FROM industry.period left join industry.sprav on period.id=sprav.value::integer and sprav.name='current_period' order by id";
         $data['period'] = $this->db->query($sql);
+
+        $firm_id = $this->uri->segment(3);
+        $data['firm'] = $this->get_firm_info_by_id($firm_id);
+
         $this->left();
         $this->load->view("pre_schetoplata", $data);
         $this->load->view("right");
@@ -1579,9 +1590,10 @@ class Billing extends Controller
         $this->db->where('firm_id', $_POST['firm_id']);
         $data['r'] = $this->db->get('industry.schetfactura_date');
 
+        $data['firm'] = $this->get_firm_info_by_id( $data['firm_id']);
+
         $sql = "select distinct value as tariff_value from industry.tariff_value ";
         $data['tariffs'] = $this->db->query($sql);
-
 
         $this->left();
         $this->load->view("pre_schetoplata2", $data);
@@ -1963,8 +1975,10 @@ class Billing extends Controller
 
     function oborotka()
     {
-        $this->db->where('firm_id', $this->uri->segment(3));
+        $firm_id = $this->uri->segment(3);
+        $this->db->where('firm_id', $firm_id);
         $data['oborotka'] = $this->db->get('industry.oborotka')->row();
+        $data['firm'] = $this->get_firm_info_by_id($firm_id);
         $this->left();
         $this->load->view("oborotka", $data);
         $this->load->view("right");
@@ -1972,8 +1986,12 @@ class Billing extends Controller
 
     function firm_oplata()
     {
-        $this->db->where('firm_id', $this->uri->segment(3));
+        $firm_id = $this->uri->segment(3);
+        $this->db->where('firm_id', $firm_id);
         $data['firm_oplata'] = $this->db->get('industry.firm_oplata')->result();
+
+        $data['firm'] = $this->get_firm_info_by_id($firm_id);
+
         $this->left();
         $this->load->view("firm_oplata", $data);
         $this->load->view("right");

@@ -1,5 +1,5 @@
-<h3>#
-
+<?php echo anchor("billing/firm/" . $firm->id, "назад к фирме"); ?><br>
+<h3>
 <?php
 function select($var,$name,$value)
 {

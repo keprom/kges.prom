@@ -1,8 +1,10 @@
+<?php echo anchor("billing/pre_schetfactura/" . $firm->id, "назад"); ?><br><br>
+    <b><?php echo $firm->dogovor." ".$firm->name; ?></b><br><br>
 <?php
 $r=$r->row();
 echo form_open("billing/schetfactura");
 echo "<input type=hidden name=firm_id value=".$firm_id." >";
-echo "<input type=checkbox name=html  ><br>";
+//echo "<input type=checkbox name=html  ><br>";
 //echo "Выдать актом выполненых работ <input type=checkbox name=akt_vypolnenyh_rabot  ><br>";
 //echo "Новая счет-фактура <input type=checkbox name=new_schetfactura ><br>";
 echo "Выдача накладной <input type=checkbox name=nakladnaya><br>";
