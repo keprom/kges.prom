@@ -1,8 +1,5 @@
 <H3>Добавление показания</H3>
-
-<?php
-echo form_open("billing/adding_pokazanie");
-?>
+<?php echo form_open("billing/adding_pokazanie"); ?>
 <h5>Показание</h5>
 <input type="text" name="value" value="" size="50" />
 <h5>Дата взятия показания</h5>
@@ -13,4 +10,4 @@ echo form_open("billing/adding_pokazanie");
 <input type=hidden name=nds value="12" />
 <br><br><br>
 <input type='submit' value='добавить показание'/>
-</form>
+<?php echo form_close(); ?>

@@ -528,7 +528,7 @@ class Billing extends Controller
 
         $sql = "SELECT * FROM industry.billing_point where id=" . $point_id;
         $data['point_data'] = $this->db->query($sql)->row();
-        $sql = "SELECT counter.*,counter_type.name as type from industry.counter,industry.counter_type where counter.type_id=counter_type.id and  point_id=" . $point_id." order by data_finish";
+        $sql = "SELECT counter.*,counter_type.name as type from industry.counter,industry.counter_type where counter.type_id=counter_type.id and  point_id=" . $point_id . " order by data_finish";
         $data['query'] = $this->db->query($sql);
 
         $sql = "select * from industry.counter where data_start is null and point_id=" . $point_id;
@@ -808,6 +808,10 @@ class Billing extends Controller
     {
         $values_set_id = $this->uri->segment(3);
         $data['firm'] = $this->get_firm_info_by_values_set_id($values_set_id);
+        $this->db->where("firm_id", $data['firm']->id);
+        $this->db->where("period_id", $this->get_cpi());
+        $is_closed = $this->db->get("industry.firm_close")->num_rows();
+
         $this->db->where("id", $values_set_id);
         $data['counter_id'] = $this->db->get("industry.values_set")->row()->counter_id;
         $sql = "select * from industry.counter where id=(select counter_id from industry.values_set where id=" .
@@ -822,7 +826,9 @@ class Billing extends Controller
         $data['query'] = $this->db->query($sql);
         $this->left();
         $this->load->view("values_sets_view", $data);
-        $this->execute("add_pokazanie");
+        if ($is_closed == 0) {
+            $this->execute("add_pokazanie");
+        }
         $this->execute("nadbavka_ab");
         $this->execute("akt");
         $this->execute("sovm_ab");
@@ -1659,6 +1665,7 @@ class Billing extends Controller
     function edit_pokaz()
     {
         $firm_id = $this->uri->segment(3);
+        $data['firm'] = $this->get_firm_info_by_id($firm_id);
         $this->db->where("firm_id", $firm_id);
         $this->db->where("period_id", $this->get_cpi());
         $data['is_closed'] = $this->db->get("industry.firm_close")->num_rows();

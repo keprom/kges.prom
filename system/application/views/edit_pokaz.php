@@ -17,7 +17,9 @@ $i = 0;
 $num = $pokaz->num_rows();
 $j = 0;
 ?>
-<?php echo anchor("billing/firm/" . $firm_id, "назад к фирме"); ?>
+<?php echo anchor("billing/firm/" . $firm_id, "назад к фирме"); ?><br><br>
+<b><?php echo $firm->dogovor." ".$firm->name; ?></b><br>
+
 <table>
     <?php foreach ($pokaz->result() as $p): ?>
         <?php if (($last_values_set_id != 0) and ($last_values_set_id != $p->values_set_id)): ?>
@@ -38,7 +40,7 @@ $j = 0;
                     <input type='submit' style="width: 100%" value='добавить показание'/>
                     <?php echo form_close(); ?>
                     <?php elseif ($is_closed == 1): ?>
-                    <p>Добавление показаний запрещено: организация закрыта</p>
+                    <p>Добавление показаний запрещено</p>
                     <?php endif; ?>
                     <a name=<?php echo $p->values_set_id; ?>>
                 </td>
@@ -93,7 +95,7 @@ $j = 0;
                     <input type='submit' value='добавить показание'/>
                         <?php echo form_close(); ?>
                     <?php elseif ($is_closed == 1): ?>
-                        <p>Добавление показаний запрещено: организация закрыта</p>
+                        <p>Добавление показаний запрещено</p>
                     <?php endif; ?>
                     <a name=<?php $j; ?>/>
                     <br>
