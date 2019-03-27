@@ -13,6 +13,8 @@ if ($this->session->flashdata('is_deleted')==1)
   echo "<h3>Счетчик не удален в виду наличия на нем показаний за прошлые периоды</h3>";
 
 ?>
+<br>
+<b><?php echo $firm->dogovor." ".$firm->name; ?></b>
 <h3><b>Точка учета <?php echo $point_data->name; ?></b></h3>
 Адрес: <?php echo $point_data->address; ?><br>
 Учет <?php echo ($point_data->phase==1?"однофазный":"трехфазный"); ?><br><br>

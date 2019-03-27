@@ -1,5 +1,5 @@
 <?php echo anchor(base_url()."/billing/point/{$point_id}","Назад к списку счетчиков" )."";?><br><br>
-
+<b><?php echo $firm->dogovor." ".$firm->name; ?></b><br><br>
 <b>Тарифы счетчика </b> <br/><br/><br/>
 <b>установленные тарифы на счетчике:</b><br/><br/>
 <?php echo anchor ("billing/change_counter/".$counter_id,"Редактировать счетчик" );?><br><br><br>

@@ -4,7 +4,6 @@ function datetostring($date)
     $d = explode("-", $date);
     return $d['2'] . '.' . $d['1'] . '.' . $d['0'];
 }
-
 function f_d($var)
 {
     if ($var == 0) return "0.00"; else
@@ -25,6 +24,7 @@ $j = 0;
             <tr>
                 <td colspan="5">
                     <a name=id<?php echo $j; ?> />
+                    <?php if($is_closed == 0): ?>
                     <?php echo form_open("billing/adding_pokazanie2/" . $j, array('id' => 'form' . $j));
                     $j++ ?>
                     <b>Показание</b> <input id=<?php $p->values_set_id; ?> type="text" name="value" size="30"/><br>
@@ -35,8 +35,11 @@ $j = 0;
                                size="5"/>
                     <input type=hidden name=values_set_id value="<?php echo $last_values_set_id; ?>"/>
                     <input type=hidden name=nds value="12"/> <br/>
-                    <input type='submit' value='добавить показание'/>
-                    </form>
+                    <input type='submit' style="width: 100%" value='добавить показание'/>
+                    <?php echo form_close(); ?>
+                    <?php elseif ($is_closed == 1): ?>
+                    <p>Добавление показаний запрещено: организация закрыта</p>
+                    <?php endif; ?>
                     <a name=<?php echo $p->values_set_id; ?>>
                 </td>
             </tr>
@@ -77,6 +80,7 @@ $j = 0;
         <?php if ($i == $num - 1): ?>
             <tr>
                 <td colspan="5">
+                    <?php if($is_closed == 0): ?>
                     <?php echo form_open("billing/adding_pokazanie2/" . $j, array('id' => 'form' . $j)); ?>
                     <b>Показание</b> <input id=<?php $p->values_set_id; ?> type="text" name="value" value="" size="30"/><br>
                     День <input type="text" name="day" value="<?php echo $this->session->userdata('day'); ?>" size="5"/>
@@ -87,7 +91,10 @@ $j = 0;
                     <input type=hidden name=values_set_id value="<?php echo $p->values_set_id; ?>"/>
                     <input type=hidden name=nds value="12"/> <br/>
                     <input type='submit' value='добавить показание'/>
-                    </form>
+                        <?php echo form_close(); ?>
+                    <?php elseif ($is_closed == 1): ?>
+                        <p>Добавление показаний запрещено: организация закрыта</p>
+                    <?php endif; ?>
                     <a name=<?php $j; ?>/>
                     <br>
                 </td>

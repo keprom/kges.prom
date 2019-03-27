@@ -494,14 +494,44 @@ class Billing extends Controller
         redirect("billing/firm/" . $this->uri->segment(4));
     }
 
+    public function get_firm_info_by_id($firm_id)
+    {
+        $this->db->where("id", $firm_id);
+        return $this->db->get("industry.firm")->row();
+    }
+
+    public function get_firm_info_by_point_id($point_id)
+    {
+        $this->db->where("id", $point_id);
+        $firm_id = $this->db->get("industry.billing_point")->row()->firm_id;
+        return $this->get_firm_info_by_id($firm_id);
+    }
+
+    public function get_firm_info_by_counter_id($counter_id)
+    {
+        $this->db->where("id", $counter_id);
+        $point_id = $this->db->get("industry.counter")->row()->point_id;
+        return $this->get_firm_info_by_point_id($point_id);
+    }
+
+    public function get_firm_info_by_values_set_id($values_set_id)
+    {
+        $this->db->where("id", $values_set_id);
+        $counter_id = $this->db->get("industry.values_set")->row()->counter_id;
+        return $this->get_firm_info_by_counter_id($counter_id);
+    }
+
     function point()
     {
-        $sql = "SELECT * FROM industry.billing_point where id=" . $this->uri->segment(3);
+        $point_id = $this->uri->segment(3);
+        $data['firm'] = $this->get_firm_info_by_point_id($point_id);
+
+        $sql = "SELECT * FROM industry.billing_point where id=" . $point_id;
         $data['point_data'] = $this->db->query($sql)->row();
-        $sql = "SELECT counter.*,counter_type.name as type from industry.counter,industry.counter_type where counter.type_id=counter_type.id and  point_id=" . $this->uri->segment(3)." order by data_finish";
+        $sql = "SELECT counter.*,counter_type.name as type from industry.counter,industry.counter_type where counter.type_id=counter_type.id and  point_id=" . $point_id." order by data_finish";
         $data['query'] = $this->db->query($sql);
 
-        $sql = "select * from industry.counter where data_start is null and point_id=" . $this->uri->segment(3);
+        $sql = "select * from industry.counter where data_start is null and point_id=" . $point_id;
         $query = $this->db->query($sql);
         $this->left();
 
@@ -711,6 +741,7 @@ class Billing extends Controller
     function counter()
     {
         $counter_id = $this->uri->segment(3);
+        $data['firm'] = $this->get_firm_info_by_counter_id($counter_id);
         $this->db->where("id", $counter_id);
         $data['point_id'] = $this->db->get("industry.counter")->row()->point_id;
         $sql = "select values_set.id,tariff.type_name as type from industry.values_set,industry.tariff where tariff.id=values_set.tariff_id and  counter_id=" . $counter_id;
@@ -776,6 +807,7 @@ class Billing extends Controller
     function values_sets()
     {
         $values_set_id = $this->uri->segment(3);
+        $data['firm'] = $this->get_firm_info_by_values_set_id($values_set_id);
         $this->db->where("id", $values_set_id);
         $data['counter_id'] = $this->db->get("industry.values_set")->row()->counter_id;
         $sql = "select * from industry.counter where id=(select counter_id from industry.values_set where id=" .
@@ -1626,10 +1658,14 @@ class Billing extends Controller
 
     function edit_pokaz()
     {
+        $firm_id = $this->uri->segment(3);
+        $this->db->where("firm_id", $firm_id);
+        $this->db->where("period_id", $this->get_cpi());
+        $data['is_closed'] = $this->db->get("industry.firm_close")->num_rows();
+        $this->db->where("firm_id", $firm_id);
+        $data['pokaz'] = $this->db->get("industry.counter_add_pokaz");
+        $data['firm_id'] = $firm_id;
         $this->left();
-        $sql = "SELECT * FROM industry.counter_add_pokaz where firm_id=" . $this->uri->segment(3);
-        $data['firm_id'] = $this->uri->segment(3);
-        $data['pokaz'] = $this->db->query($sql);
         $this->load->view("edit_pokaz", $data);
         $this->load->view("right");
     }

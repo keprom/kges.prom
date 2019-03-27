@@ -1,4 +1,5 @@
 <?php echo anchor(base_url()."/billing/counter/{$counter_id}","Назад к списку тарифов" )."";?><br><br>
+<b><?php echo $firm->dogovor." ".$firm->name; ?></b><br>
 <H4>Показания счетчика по тарифу <?php echo $sets_type; ?></H4>
 Коэффициент трансформации:
 <?php
