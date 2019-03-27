@@ -59,34 +59,34 @@ function datetostring($date)
         $summa = $counter_data->transform * $r->diff * $r->tariff_value * ($r->nds / 100 + 1);
         ?>
         <tr class="tr-hover">
-            <td align="right" >
+            <td align="right" style="border: 1px solid #c5cae9;">
                 <small> <?php echo $r->value; ?> </small>
             </td>
-            <td align="right" >
+            <td align="right" style="border: 1px solid #c5cae9;">
                 <small> <?php echo $r->diff; ?> </small>
             </td>
-            <td align="center" >
+            <td align="center" style="border: 1px solid #c5cae9;">
                 <small> <?php echo datetostring($r->data); ?></small>
             </td>
-            <td align="right" >
+            <td align="right" style="border: 1px solid #c5cae9;">
                 <small> <?php echo prettify_number($r->tariff_value); ?> </small>
             </td>
-            <td  >
+            <td  style="border: 1px solid #c5cae9;">
                 <small> <?php echo prettify_number($r->nds); ?>%</small>
             </td>
-            <td align="right" >
+            <td align="right" style="border: 1px solid #c5cae9;">
                 <small> <?php echo prettify_number($itogo_kvt); ?> </small>
             </td>
-            <td align="right" >
+            <td align="right" style="border: 1px solid #c5cae9;">
                 <small> <?php echo prettify_number($itogo_tenge); ?> </small>
             </td>
-            <td align="right" >
+            <td align="right" style="border: 1px solid #c5cae9;">
                 <small> <?php echo prettify_number($itogo_nds); ?> </small>
             </td>
-            <td align="right" >
+            <td align="right" style="border: 1px solid #c5cae9;">
                 <small> <?php echo prettify_number($summa); ?>  </small>
             </td>
-            <td ><?php echo anchor("billing/delete_pokazanie/" . $r->id, "<img src=" . base_url() . "img/delete.png />"); ?></td>
+            <td align="right" style="border: 1px solid #c5cae9;"><?php echo anchor("billing/delete_pokazanie/" . $r->id, "<img src=" . base_url() . "img/delete.png />"); ?></td>
 
         </tr>
     <?php endforeach; ?>

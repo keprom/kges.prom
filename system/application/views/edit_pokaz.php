@@ -20,7 +20,7 @@ $j = 0;
 <?php echo anchor("billing/firm/" . $firm_id, "назад к фирме"); ?><br><br>
 <b><?php echo $firm->dogovor." ".$firm->name; ?></b><br>
 
-<table>
+<table style="border-collapse: collapse">
     <?php foreach ($pokaz->result() as $p): ?>
         <?php if (($last_values_set_id != 0) and ($last_values_set_id != $p->values_set_id)): ?>
             <tr>
@@ -71,11 +71,11 @@ $j = 0;
         <?php if ($p->counter_value_value != null): ?>
             <tr class="tr-hover">
                 <?php if ($p->period_id != NULL) echo "<font color=red >"; ?>
-                <td align="center"><?php echo datetostring($p->counter_value_data);?></td>
-                <td align="right"><?php echo f_d($p->counter_value_value);?></td>
-                <td align="right"><?php echo f_d($p->counter_value_diff); ?></td>
-                <td align="right"><?php echo f_d($p->counter_value_diff * $p->transform); ?></td>
-                <td><?php echo anchor('billing/delete_pokazanie2/' . $p->counter_value_id, 'x'); ?></td>
+                <td align="center" style="border: 1px solid #c5cae9;"><?php echo datetostring($p->counter_value_data);?></td>
+                <td align="right" style="border: 1px solid #c5cae9;"><?php echo f_d($p->counter_value_value);?></td>
+                <td align="right" style="border: 1px solid #c5cae9;"><?php echo f_d($p->counter_value_diff); ?></td>
+                <td align="right" style="border: 1px solid #c5cae9;"><?php echo f_d($p->counter_value_diff * $p->transform); ?></td>
+                <td style="border: 1px solid #c5cae9;"><?php echo anchor('billing/delete_pokazanie2/' . $p->counter_value_id, 'x'); ?></td>
                 <?php if ($p->period_id != NULL) echo "</font>"; ?>
             </tr>
         <?php endif; ?>
