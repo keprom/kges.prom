@@ -95,8 +95,9 @@ class Billing extends Controller
         #$this->output->enable_profiler(TRUE);
     }
 
-    function left()
+    function left($title = NULL)
     {
+        $data['title'] = !is_null($title) ? $title : 'Учет электроэнергии. Промышленный отдел';
         #added
         $data['month_to_look'] = $this->db->query("select * from industry.current_period()")->row()->current_period;
         #end of added
@@ -113,7 +114,7 @@ class Billing extends Controller
 
     function index()
     {
-        $this->left();
+        $this->left("Выбор фирмы");
         $this->db->order_by('dogovor');
         $data['query'] = $this->db->get("industry.firm_overview");
         $this->load->view("billing_view", $data);
@@ -163,7 +164,7 @@ class Billing extends Controller
         $data['period'] = $this->db->query($sql);
         $sql = "Select industry.is_closed(" . $this->uri->segment(3) . ") as closed";
         $data['is_closed'] = $this->db->query($sql)->row();
-        $this->left();
+        $this->left("#" . $data['r']->dogovor);
         $this->load->view("firm_view", $data);
         $this->execute("points");
         $this->load->view("right");
@@ -1590,7 +1591,7 @@ class Billing extends Controller
         $this->db->where('firm_id', $_POST['firm_id']);
         $data['r'] = $this->db->get('industry.schetfactura_date');
 
-        $data['firm'] = $this->get_firm_info_by_id( $data['firm_id']);
+        $data['firm'] = $this->get_firm_info_by_id($data['firm_id']);
 
         $sql = "select distinct value as tariff_value from industry.tariff_value ";
         $data['tariffs'] = $this->db->query($sql);
@@ -1681,9 +1682,13 @@ class Billing extends Controller
         $this->db->where("firm_id", $firm_id);
         $this->db->where("period_id", $this->get_cpi());
         $data['is_closed'] = $this->db->get("industry.firm_close")->num_rows();
+
         $this->db->where("firm_id", $firm_id);
         $data['pokaz'] = $this->db->get("industry.counter_add_pokaz");
         $data['firm_id'] = $firm_id;
+        $this->db->where("firm_id", $firm_id);
+        $this->db->order_by("name");
+        $data['point_list'] = $this->db->get("industry.point_list")->result();
         $this->left();
         $this->load->view("edit_pokaz", $data);
         $this->load->view("right");
