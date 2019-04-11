@@ -4816,6 +4816,10 @@ where firm_id={$this->uri->segment(3)} and data_finish is null";
         }
 
         $db = dbase_open("c:/oplata/rschet.dbf", 2);
+
+        $this->db->where("period_id", $this->get_cpi());
+        $this->db->delete("industry.uploaded_invoice");
+
         if ($db) {
             for ($i = 1; $i < dbase_numrecords($db) + 1; $i++) {
                 dbase_delete_record($db, $i);
@@ -4892,6 +4896,21 @@ where firm_id={$this->uri->segment(3)} and data_finish is null";
                     continue;
                 }
 
+                $sf = array(
+                    'name' => $n->name,
+                    'dog' => $n->dog,
+                    'kvt' => $n->kvt,
+                    'tarif' => $n->tarif,
+                    'beznds' => $n->beznds,
+                    'nds' => $n->nds,
+                    'snds' => $n->snds,
+                    'nomer' => $n->nomer,
+                    'firm_id' => $n->firm_id,
+                    'period_id' => $n->period_id,
+                );
+
+                $this->db->insert("industry.uploaded_invoice", $sf);
+
                 dbase_add_record($db,
                     array(
                         mb_convert_encoding(str_replace('  ', ' ', trim($n->name)), 'cp866', 'utf-8'),
@@ -4932,6 +4951,20 @@ where firm_id={$this->uri->segment(3)} and data_finish is null";
         } else {
             echo "DBF file is busy!";
         }
+    }
+
+    public function uploaded_invoice($period_id = null)
+    {
+        $period_id = is_null($period_id) ? $this->get_cpi() : $period_id;
+
+        $this->db->where("period_id", $period_id);
+        $this->db->order_by("nomer");
+        $data['invoice'] = $this->db->get("industry.uploaded_invoice")->result();
+
+        $this->db->where("id", $period_id);
+        $data['period'] = $this->db->get("industry.period")->row();
+
+        $this->load->view("other_reports/uploaded_invoice", $data);
     }
 
     public function kontragent_rek()

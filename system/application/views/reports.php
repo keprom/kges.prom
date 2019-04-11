@@ -57,3 +57,4 @@ echo anchor("billing/pre_manual_sf","Счет-фактура")."<br>";
 <a href="<?php echo site_url('billing/pre_billing_info_dop'); ?>"><?php echo 'Информация по точкам учета по ТУРЭ'; ?></a><br>
 <li><a href="<?php echo site_url('billing/kontragent_rek'); ?>"><?php echo 'Список контрагентов с реквизитами'; ?></a></li>
 <li><a href="<?php echo site_url('billing/pre_sf_verification'); ?>"><?php echo 'Номера счетов-фактур с начислениями'; ?></a></li>
+<li><a href="<?php echo site_url('billing/uploaded_invoice/'); ?>"><?php echo 'Выгруженные счет-фактуры в файл за '.$month_to_look; ?></a></li>
