@@ -4852,7 +4852,7 @@ where firm_id={$this->uri->segment(3)} and data_finish is null";
 
                 //находим некорректные БИНы организаций
                 if (mb_strlen(trim($n->bin), 'UTF-8') != 12) {
-                    $array_error[] = "№{$n->dog}: неверный БИН - {$n->bin}";
+                    $array_error[] = "№{$n->dog}:{$n->name} - неверный БИН - {$n->bin}";
                     continue;
                 }
 
@@ -4866,13 +4866,13 @@ where firm_id={$this->uri->segment(3)} and data_finish is null";
 
                 //вдруг пропущен символ
                 if ($this->isRussian($n->mfo)) {
-                    $array_error[] = "№{$n->dog}: БИК банка содержит кириллицу - {$n->mfo}";
+                    $array_error[] = "№{$n->dog}:{$n->name} - БИК банка содержит кириллицу - {$n->mfo}";
                     continue;
                 }
 
                 //проверка расчетного счета
                 if (($n->mfo <> '') && (mb_strlen($n->schet, 'UTF-8') <> 20)) {
-                    $array_error[] = "№{$n->dog}: некорректный расчетный счет - {$n->schet}";
+                    $array_error[] = "№{$n->dog}:{$n->name} - некорректный расчетный счет - {$n->schet}";
                     continue;
                 }
 
@@ -4882,13 +4882,13 @@ where firm_id={$this->uri->segment(3)} and data_finish is null";
 
                 //проверка начисления
                 if ($n->beznds == 0) {
-                    $array_error[] = "№{$n->dog}: нулевая счет-фактура";
+                    $array_error[] = "№{$n->dog}:{$n->name} - нулевая счет-фактура";
                     continue;
                 }
 
                 //проверка номера СФ
                 if (strlen(trim($n->nomer)) == 0) {
-                    $array_error[] = "№{$n->dog}: некорректный номер счет-фактуры - {$n->nomer}";
+                    $array_error[] = "№{$n->dog}:{$n->name} - некорректный номер счет-фактуры - {$n->nomer}";
                     continue;
                 }
 
