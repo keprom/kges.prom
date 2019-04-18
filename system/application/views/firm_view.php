@@ -46,7 +46,6 @@ foreach ($period->result() as $p)
 }
 echo "</select>";
 echo "<input type=submit value='Открыть ведомость' />";
-echo "<input type=submit name='fast_met' value='Открыть ведомость (экспериментальный)' />";
 echo "</form><br>";
 
 ?>

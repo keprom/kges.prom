@@ -1082,19 +1082,11 @@ class Billing extends Controller
         $sql = "SELECT * FROM industry.firm WHERE id=" . $_POST['firm_id'];
         $data['firm'] = $this->db->query($sql)->row();
 
-        if (isset($_POST['fast_met'])) {
-            $sql = "SELECT * FROM industry.firm_vedomost WHERE firm_id=" . $_POST['firm_id'] . " and period_id=" . $_POST['period_id'];
-            $data['vedomost'] = $this->db->query($sql);
-            $sql = "SELECT * FROM industry.firm_itog_vedomost where firm_id=" . $_POST['firm_id'] . " and period_id=" . $_POST['period_id'];
-            $data['itogo'] = $this->db->query($sql)->row();
-            $data['met'] = 'fast';
-        } else {
-            $sql = "SELECT * FROM industry.vedomost WHERE firm_id=" . $_POST['firm_id'] . " and period_id=" . $_POST['period_id'];
-            $data['vedomost'] = $this->db->query($sql);
-            $sql = "SELECT * FROM industry.vedomost_itog where firm_id=" . $_POST['firm_id'] . " and period_id=" . $_POST['period_id'];
-            $data['itogo'] = $this->db->query($sql)->row();
-            $data['met'] = 'old';
-        }
+        $sql = "SELECT * FROM industry.vedomost WHERE firm_id=" . $_POST['firm_id'] . " and period_id=" . $_POST['period_id'];
+        $data['vedomost'] = $this->db->query($sql);
+        $sql = "SELECT * FROM industry.vedomost_itog where firm_id=" . $_POST['firm_id'] . " and period_id=" . $_POST['period_id'];
+        $data['itogo'] = $this->db->query($sql)->row();
+        $data['met'] = 'old';
 
         #fine
         $data['is_fine'] = $this->db->query("select count(*) as is_fine from industry.fine_firm where firm_id = {$_POST['firm_id']} and period_id = {$_POST['period_id']}")->row()->is_fine;
