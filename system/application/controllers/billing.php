@@ -2,6 +2,18 @@
 
 class Billing extends Controller
 {
+    private $stopWrondRoundingPeriod = 124;
+
+    public function setStopWrondRoundingPeriod($stopWrondRoundingPeriod)
+    {
+        $this->stopWrondRoundingPeriod = $stopWrondRoundingPeriod;
+    }
+
+    public function getStopWrondRoundingPeriod()
+    {
+        return $this->stopWrondRoundingPeriod;
+    }
+
     function datetostring($date)
     {
         $d = explode("-", $date);
@@ -1082,11 +1094,19 @@ class Billing extends Controller
         $sql = "SELECT * FROM industry.firm WHERE id=" . $_POST['firm_id'];
         $data['firm'] = $this->db->query($sql)->row();
 
-        $sql = "SELECT * FROM industry.vedomost WHERE firm_id=" . $_POST['firm_id'] . " and period_id=" . $_POST['period_id'];
-        $data['vedomost'] = $this->db->query($sql);
-        $sql = "SELECT * FROM industry.vedomost_itog where firm_id=" . $_POST['firm_id'] . " and period_id=" . $_POST['period_id'];
-        $data['itogo'] = $this->db->query($sql)->row();
-        $data['met'] = 'old';
+        if ($_POST['period_id'] > $this->getStopWrondRoundingPeriod()) {
+            $sql = "SELECT * FROM industry.vedomost WHERE firm_id=" . $_POST['firm_id'] . " and period_id=" . $_POST['period_id'];
+            $data['vedomost'] = $this->db->query($sql);
+            $sql = "SELECT * FROM industry.vedomost_itog where firm_id=" . $_POST['firm_id'] . " and period_id=" . $_POST['period_id'];
+            $data['itogo'] = $this->db->query($sql)->row();
+            $data['met'] = 'old';
+        } else {
+            $sql = "SELECT * FROM industry.firm_vedomost WHERE firm_id=" . $_POST['firm_id'] . " and period_id=" . $_POST['period_id'];
+            $data['vedomost'] = $this->db->query($sql);
+            $sql = "SELECT * FROM industry.firm_itog_vedomost where firm_id=" . $_POST['firm_id'] . " and period_id=" . $_POST['period_id'];
+            $data['itogo'] = $this->db->query($sql)->row();
+            $data['met'] = 'fast';
+        }
 
         #fine
         $data['is_fine'] = $this->db->query("select count(*) as is_fine from industry.fine_firm where firm_id = {$_POST['firm_id']} and period_id = {$_POST['period_id']}")->row()->is_fine;
@@ -1406,7 +1426,7 @@ class Billing extends Controller
             $data['akt_vypolnenyh_rabot'] = "Акт выполненых работ";
         else
             $data['akt_vypolnenyh_rabot'] = "";
-        //$this->db->where('period_id',$_POST['period_id']);
+
         $this->db->where('id', $_POST['firm_id']);
         $this->db->update('industry.firm', array(
                 'edit1' => $_POST['edit1'],
@@ -1421,12 +1441,6 @@ class Billing extends Controller
             )
         );
 
-//        echo "<pre>";
-//        var_dump($_POST['firm_id']);
-//        var_dump($_POST['period_id']);
-//        echo "</pre>";
-//        die();
-
         if ($_POST['period_id'] >= 116) {
             $this->db->where('period_id', $_POST['period_id']);
             $this->db->where('firm_id', $_POST['firm_id']);
@@ -1434,7 +1448,6 @@ class Billing extends Controller
         } else {
             $data['do_fine'] = 0;
         }
-
 
         if ($data['do_fine']) {
             $data['fine_value'] = $this->db->query("select * from industry.fine_calc_firm({$_POST['firm_id']}, {$_POST['period_id']})")->row()->fine_calc_firm;
@@ -1451,6 +1464,7 @@ class Billing extends Controller
             $this->db->where('period_id', $_POST['period_id']);
             $this->db->where('firm_id', $_POST['firm_id']);
             $isset_fine = $this->db->get('industry.fine_firm_oplata_itog')->num_rows();
+
             if ((isset($isset_fine)) and ($isset_fine > 0)) {
                 $this->db->where('period_id', $_POST['period_id']);
                 $this->db->where('firm_id', $_POST['firm_id']);
@@ -1458,10 +1472,10 @@ class Billing extends Controller
             } else {
                 $data['fine_oplata'] = 0;
             }
+
         } else {
 
         }
-
 
         $this->db->where('period_id', $_POST['period_id']);
         $this->db->where('firm_id', $_POST['firm_id']);
@@ -1492,8 +1506,18 @@ class Billing extends Controller
 
         $sql = "SELECT * FROM industry.org_info";
         $data['org'] = $this->db->query($sql)->row();
-        #$sql = "select * from industry.firm_schetfactura where tariff_value<>0 and firm_id=" . $_POST['firm_id'] . ' and period_id=' . $_POST['period_id'];
-        $sql = "select * from industry.schetfactura where tariff_value<>0 and firm_id=" . $_POST['firm_id'] . ' and period_id=' . $_POST['period_id'];
+        if ($_POST['period_id'] > $this->getStopWrondRoundingPeriod()) {
+            $this->db->where('period_id', $_POST['period_id']);
+            $this->db->where('firm_id', $_POST['firm_id']);
+            $data['itog'] = $this->db->get("industry.vedomost_itog")->row();
+            $sql = "select * from industry.schetfactura where tariff_value<>0 and firm_id=" . $_POST['firm_id'] . ' and period_id=' . $_POST['period_id'];
+        } elseif ($_POST['period_id'] <= $this->getStopWrondRoundingPeriod()) {
+            $this->db->where('period_id', $_POST['period_id']);
+            $this->db->where('firm_id', $_POST['firm_id']);
+            $data['itog'] = $this->db->get("industry.firm_itog_vedomost")->row();
+            $sql = "select * from industry.firm_schetfactura where tariff_value<>0 and firm_id=" . $_POST['firm_id'] . ' and period_id=' . $_POST['period_id'];
+        }
+
         $data['s'] = $this->db->query($sql)->result();
 
         $dt_zp = "select * from industry.period where id=" . $_POST['period_id'] . "";
@@ -1522,10 +1546,6 @@ class Billing extends Controller
         $this->db->where('id', $data['firm']->bank_id);
         $data['bank'] = $this->db->get('industry.bank')->row();
 
-        $this->db->where('period_id', $_POST['period_id']);
-        $this->db->where('firm_id', $_POST['firm_id']);
-        $data['itog'] = $this->db->get("industry.vedomost_itog")->row();
-        #$data['itog'] = $this->db->get("industry.firm_itog_vedomost")->row();
 
         $this->load->library("pdf/pdf");
         $this->pdf->SetSubject('TCPDF Tutorial');
@@ -4009,6 +4029,19 @@ where firm_id={$this->uri->segment(3)} and data_finish is null";
         $this->pdf->writeHTML($string);
         $this->pdf->Output('example_001.pdf', 'I');
 
+    }
+
+    private function close_firm_by_period_id($firm_id, $period_id = null)
+    {
+        if (is_null($firm_id)) {
+            exit("Error! Firm_id not found!");
+        }
+
+        if (is_null($period_id)) {
+            $period_id = $this->get_cpi();
+        }
+
+        $this->db->guery("select * from industry.close_firm_by_period({$firm_id}, {$period_id};");
     }
 
     /*FINE*/
