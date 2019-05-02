@@ -47,18 +47,10 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <?php $ref_date = ''; ?>
                     <?php foreach ($ref_rates as $ref_rate): ?>
                         <tr>
-                            <?php
-                            $ref_date = explode("-", $ref_rate->data);
-                            $ref_date = $ref_date[2].".".$ref_date[1].".".$ref_date[0];
-                            ?>
-                            <td><?php
-                                echo $ref_date;
-                                $ref_date = '';
-                                ?></td>
-                            <td align="right"><?php echo prettify_number($ref_rate->value); ?></td>
+                            <td><?php echo $ref_rate->data; ?></td>
+                            <td align="right"><?php echo $ref_rate->value; ?></td>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>
